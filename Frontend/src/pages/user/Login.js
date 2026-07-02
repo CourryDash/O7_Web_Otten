@@ -1,0 +1,192 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import '../../css/login.css';
+
+function withNavigation(Component) {
+    return props => <Component {...props} navigate={useNavigate()} />;
+}
+
+class Login extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: '',
+            password: ''
+        };
+    };
+
+    API_URL = process.env.REACT_APP_API_URL;
+
+    componentDidMount() {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        const userId = params.get('userId');
+        const email = params.get('email');
+        const role = params.get('role');
+        const username = params.get('username');
+
+        if (token) {
+            localStorage.setItem('token', token);
+            localStorage.setItem('userId', userId);
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('userName', username);
+            
+            // Redirect sesuai role
+            if (role === 'admin') {
+                this.props.navigate("/admin");
+            } else {
+                this.props.navigate("/");
+            }
+        }
+    }
+
+    handleInputChange = (e) => {
+        const { name, value } = e.target;
+        this.setState({ [name]: value });
+    }
+
+    handleSubmit = async (e) => { // Fitur : Login dengan JWT
+        e.preventDefault();
+        const { email, password } = this.state;
+        const status = document.getElementById('status');
+
+        try {
+            const response = await fetch(`${this.API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.user.id_user);
+                localStorage.setItem('userEmail', data.user.email);
+                localStorage.setItem('userRole', data.user.role);
+                localStorage.setItem('userName', data.user.username);
+                
+                if (data.user.role === 'admin') {
+                    this.props.navigate("/admin");
+                } else {
+                    this.props.navigate("/");
+                }
+            } else {
+                status.textContent = data.error || "Login gagal!";
+                status.classList.add("alert-danger");
+                status.style.display = "block";
+            }
+        } catch (error) {
+            console.error('Terjadi kesalahan saat login:', error);
+            status.textContent = "Gagal terhubung ke server. Coba lagi nanti.";
+            status.classList.add("alert-danger");
+            status.style.display = "block";
+        }
+    }
+
+    render() {
+        return (
+            <div className="login-container">
+                <div className="login-left">
+                    <Link to="/">
+                        <img
+                            src="aset/logo-otten-coffee.png"
+                            alt="Otten Coffee"
+                            className="mb-4"
+                            style={{ width: '100px' }}
+                        />
+                    </Link>
+
+                    <h5 className="fw-semibold mb-3">Masuk untuk melanjutkan</h5>
+
+                    <div className="container-fluid registration-container mt-3">
+                        <div id="status" className="alert" style={{ display: 'none' }}></div>
+                    </div>
+
+                    <form onSubmit={this.handleSubmit}>
+                        <label className="form-label small text-muted">Email</label>
+                        <input
+                            type="email"
+                            className="form-control mb-3"
+                            placeholder="Email"
+                            name="email"
+                            value={this.state.email}
+                            onChange={this.handleInputChange}
+                            required
+                        />
+                        <label className="form-label small text-muted">Password</label>
+                        <input
+                            type="password"
+                            className="form-control mb-3"
+                            placeholder="Password"
+                            minLength="6"
+                            name="password"
+                            value={this.state.password}
+                            onChange={this.handleInputChange}
+                            required
+                        />
+                        <button type="submit" className="btn btn-login mb-3">Masuk</button>
+                    </form>
+
+                    <div className="divider">atau masuk dengan</div>
+
+                    <div className="text-center mb-3">
+                        <a className="google-btn" href={`${this.API_URL}/auth/google`}>
+                            <img src="aset/logo-google.png" alt="Google" />
+                        </a>
+                    </div>
+
+                    <p className="text-center small mb-0">
+                        Belum punya akun?{' '}
+                        <Link to="/register" className="daftarkan fw-semibold text-decoration-none">Daftar</Link>
+                    </p>
+
+                    <div className="divider">
+                        Butuh bantuan atau pertanyaan hubungi kami di{' '}
+                        <a href="mailto:customer.care@ottencoffee.co.id" className="linkan">
+                            customer.care@ottencoffee.co.id
+                        </a>{' '}
+                        atau kirim pesan via{' '}
+                        <a href="/" target="_blank" rel="noopener noreferrer" className="linkan">
+                            WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+                <div className="login-right">
+                    <input type="radio" name="radio-btn" id="slide1" defaultChecked />
+                    <input type="radio" name="radio-btn" id="slide2" />
+                    <input type="radio" name="radio-btn" id="slide3" />
+
+                    <div className="slider">
+                        <div className="slides">
+                            <div className="slide">
+                                <img src="aset/login1.png" alt="Coffee 1" />
+                                <div className="caption">Nikmati Kopi Arabika Pilihan Terbaik</div>
+                            </div>
+                            <div className="slide">
+                                <img src="aset/login2.png" alt="Coffee 2" />
+                                <div className="caption">Espresso Kuat Untuk Awal Hari Kamu</div>
+                            </div>
+                            <div className="slide">
+                                <img src="aset/login3.png" alt="Coffee 3" />
+                                <div className="caption">Semua Kebutuhan Ngopi Kamu Ada di Sini!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="navigation">
+                        <label htmlFor="slide1" className="bar"></label>
+                        <label htmlFor="slide2" className="bar"></label>
+                        <label htmlFor="slide3" className="bar"></label>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+};
+
+export default withNavigation(Login);

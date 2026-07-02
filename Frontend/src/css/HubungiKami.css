@@ -1,0 +1,35 @@
+.hubungi-kami .list-unstyled a {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.hubungi-kami .list-unstyled a:hover {
+    color: rgb(140, 156, 117);
+    text-decoration: none;
+}
+
+.hubungi-kami .kiri {
+    width: 50%;
+}
+
+.hubungi-kami .kanan {
+    width: 50%;
+}
+
+.hubungi-kami .alamat {
+    margin: 10px;
+    border: 1px solid #F5F5F5;
+    box-sizing: border-box;
+    border-radius: 6px;
+    height: 400px;
+}
+
+.hubungi-kami .text {
+    padding: 16px;
+}
+
+.hubungi-kami .text p {
+    font-size: 14px;
+    line-height: 150%;
+}

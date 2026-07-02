@@ -1,0 +1,13 @@
+.cicilan .petunjuk,
+.cicilan .syarat-cicilan {
+    padding: 16px;
+}
+
+.cicilan .text-small {
+    font-size: 14px;
+}
+
+.cicilan .syarat-cicilan a {
+    color: rgb(140, 156, 117);
+    text-decoration: none;
+}

@@ -1,0 +1,93 @@
+img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .breadcrumb-custom {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+        .breadcrumb-custom a {
+            color: #999;
+        }
+        .breadcrumb-custom .separator {
+            margin: 0 10px;
+            font-size: 10px;
+        }
+        .breadcrumb-custom .active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .page-title {
+            text-align: center;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 50px;
+            font-size: 32px;
+        }
+
+        .guide-step {
+            margin-bottom: 60px;
+        }
+
+        .guide-content h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .guide-content ol {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .guide-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .guide-content p {
+            line-height: 1.6;
+        }
+        .end-notes {
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+        .note-box {
+            background-color: #f9f7f4;
+            padding: 30px; 
+            border-radius: 8px;
+            text-align: center; 
+            margin-bottom: 20px; 
+            font-size: 16px;
+            color: #555; 
+            line-height: 1.8; 
+        }
+        .note-box strong {
+            font-weight: 700;
+            color: #333; 
+        }
+
+        @media (max-width: 767.98px) {
+            .guide-step {
+                text-align: center;
+                margin-bottom: 40px;
+            }
+            .guide-content {
+                text-align: left;
+                margin-top: 20px;
+            }
+            .order-mobile-first {
+                order: -1;
+            }
+        }

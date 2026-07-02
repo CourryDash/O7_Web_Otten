@@ -1,0 +1,91 @@
+.otten-poin h1 {
+    font-weight: 600;
+    font-size: 28px;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+ 
+.otten-poin h4{
+    font-weight: 600;
+    font-size: 20px;
+    text-align: center;
+}
+
+.otten-poin .text-kecil {
+    font-size: 16px;
+}
+
+.otten-poin h5{
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.otten-poin .d-flex {
+    border-bottom: 1px solid #F5F5F5;
+    padding: 30px 0px;
+}
+
+.otten-poin .image-left {
+    padding-right: 30px;
+    width: 50%
+}
+
+.otten-poin .image-left-content {
+    border: 1px solid #F5F5F5;
+}
+
+.otten-poin .image-right {
+    border: 1px solid #F5F5F5;
+    width: 50%
+}
+
+.otten-poin .note-top {
+    border: 1px solid #F5F5F5;
+    background: #F8F6F2;
+    padding: 15px;
+    border-radius: 6px;
+    height: 250px !important;
+}
+
+.otten-poin .kotak-content {
+    border: 1px solid #F5F5F5;
+    padding: 20px;
+    height: 100%;
+}
+
+.otten-poin .box-content {
+    border: 1px solid #F5F5F5;
+    background: #F8F6F2;
+    padding: 15px;
+    border-radius: 6px;
+    height: auto !important;
+}
+
+.otten-poin .perolehan-komisi {
+    border: 1px solid #F5F5F5;
+    padding: 20px;
+}
+
+.otten-poin .bottom-box {
+    border-top: 1px solid #F5F5F5;
+    margin-top: 64px;
+}
+
+.otten-poin .tanggal-kdlw {
+    border: 1px solid #F5F5F5;
+    padding: 20px;
+}
+
+.otten-poin .note {
+    border: 1px solid #F5F5F5;
+    background: #F8F6F2;
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.otten-poin .item {
+    border-bottom: 1px solid #F5F5F5;
+    padding: 30px 0;
+}

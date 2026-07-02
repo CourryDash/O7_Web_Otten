@@ -1,0 +1,79 @@
+a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .breadcrumb-custom {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 30px;
+            background-color: transparent;
+            padding: 0;
+        }
+        .breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+            content: "\F285";
+            font-family: 'bootstrap-icons';
+            font-size: 10px;
+            color: #999;
+            padding: 0 10px;
+        }
+        .breadcrumb-custom a {
+            color: #999;
+        }
+        .breadcrumb-custom .active {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .privacy-content {
+            max-width: 100%;
+        }
+        .page-title {
+            text-align: center;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .section-title {
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .privacy-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .privacy-content ol, .privacy-content ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        .privacy-content li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+        .toc-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc-list li {
+            margin-bottom: 5px;
+        }
+        .privacy-content ol {
+            list-style-type: decimal;
+        }
+        .privacy-content ul {
+            list-style-type: disc;
+        }
+        .small-bullet-list {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .small-bullet-list li {
+            margin-bottom: 5px;
+        }

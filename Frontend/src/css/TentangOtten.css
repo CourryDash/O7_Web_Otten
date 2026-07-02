@@ -1,0 +1,60 @@
+.tentang-otten p {
+    font-size: 16px;
+    word-spacing: 4px;
+}
+
+.tentang-otten .bagian-2 p {
+    font-size: 14px;
+    word-spacing: 4px;
+}
+
+.tentang-otten .setengah-lingkaran {
+    width: 12px;
+    height: 16px;
+    background-color: #6DBF67;
+    border-bottom-left-radius: 16px;
+    border-top-left-radius: 16px;
+    border-bottom: 0;
+}
+
+.tentang-otten .bagian-2 .content {
+    border: 1px solid #6dbf67;
+    border-radius: 10px;
+    background-color: #F8F6F2;
+    width: 50%;
+    height: 141px;
+}
+
+.tentang-otten .bagian-3 {
+    padding-bottom: 100px;
+}
+
+.tentang-otten .bagian-5 {
+    margin: 32px 75px 50px 75px;
+    padding-bottom: 100px;
+}
+
+.tentang-otten .bagian-5 h4 {
+    margin-bottom: 100px;
+}
+
+.tentang-otten .bagian-5 .bagian-atas,
+.tentang-otten .bagian-5 .bagian-bawah 
+{
+    padding: 40px;
+}
+
+.tentang-otten .bagian-5 img {
+    width: 35%;
+    padding-bottom: 20px;
+}
+
+.tentang-otten .bagian-5 .gambar-1,
+.tentang-otten .bagian-5 .gambar-2,
+.tentang-otten .bagian-5 .gambar-3,
+.tentang-otten .bagian-5 .gambar-4,
+.tentang-otten .bagian-5 .gambar-5,
+.tentang-otten .bagian-5 .gambar-6{
+    width: 30%;
+    text-align: center;
+}

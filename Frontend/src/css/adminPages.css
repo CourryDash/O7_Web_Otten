@@ -1,0 +1,24 @@
+.admin-pages {
+  width: 100%;
+}
+
+.admin-pages-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.admin-pages-stat-card {
+  width: 250px;
+  border-radius: 12px;
+}
+
+.admin-pages-guide {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 0;
+}

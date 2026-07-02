@@ -1,0 +1,38 @@
+.bantuan {
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    font-weight: 600;
+    line-height: 1.5em;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 20px;
+}
+
+.faq-bantuan {
+    padding-bottom: 100px;
+}
+
+.faq-bantuan a{
+    color: rgb(140, 156, 117);
+    text-decoration: none;
+}
+
+.faq-bantuan hr {
+    color: #555555;
+}
+
+.faq-bantuan .content {
+    max-width: 100%;
+    padding: 16px 50px 16px 0;
+}
+
+.faq-bantuan .content-kanan {
+    max-width: 100%;
+    padding: 16px 0 16px 50px;
+}
+
+.faq-bantuan .content-tengah {
+    max-width: 100%;
+    padding: 16px 25px 16px 25px;
+}

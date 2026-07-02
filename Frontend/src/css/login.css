@@ -1,0 +1,158 @@
+body {
+  background-color: #f5f5f5;
+  font-family: "Inter", sans-serif;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.login-left {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 40px;
+  width: 380px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-login {
+  background-color: #4a752c;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+}
+
+.divider {
+  text-align: center;
+  color: #999;
+  font-size: 13px;
+  margin: 20px 0;
+  position: relative;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.google-btn {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background-color: #fff;
+  display: inline-block;
+}
+
+.google-btn img {
+  width: 18px;
+}
+
+.linkan,
+.daftarkan {
+  text-decoration: none;
+  color: #4a752c;
+}
+
+.login-right {
+  width: 400px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.slider {
+  position: relative;
+  width: 100%;
+  min-height: 350px;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.slides {
+  display: flex;
+  width: 300%;
+  transition: transform 0.6s ease;
+}
+
+.slide {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide img {
+  width: 250px;
+  border-radius: 10px;
+}
+
+.caption {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+#slide1:checked ~ .slider .slides {
+  transform: translateX(0);
+}
+
+#slide2:checked ~ .slider .slides {
+  transform: translateX(-100%);
+}
+
+#slide3:checked ~ .slider .slides {
+  transform: translateX(-200%);
+}
+
+.navigation {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.bar {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background: #bbb;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#slide1:checked ~ .navigation label[for="slide1"],
+#slide2:checked ~ .navigation label[for="slide2"],
+#slide3:checked ~ .navigation label[for="slide3"] {
+  background: #4a752c;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-right {
+    width: 100%;
+  }
+}

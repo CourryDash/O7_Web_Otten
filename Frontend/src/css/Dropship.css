@@ -1,0 +1,93 @@
+.cara-kerja {
+    display: flex;
+    text-align: center;
+    padding-bottom: 100px;
+}
+
+.cara-kerja img,
+.mengapa img{
+    padding: 20px;
+    width: 35%;
+}
+
+.cara-kerja .cara {
+    flex: 25%;
+    margin: 10px;
+    padding: 24px 16px;
+    border: 1px solid #F5F5F5;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+.keuntungan {
+    flex: 30%;
+    text-align: center;
+    background-image: linear-gradient(339.85deg, #6DBF67 1.06%, #A8DAA4 100%);
+    border-radius: 5px;
+}
+
+.keuntungan .lingkaran {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: white;
+    text-align: center;
+    padding: 12px;
+    margin-right: 10px;
+}
+
+.keuntungan p {
+    padding-top: 10px;
+    font-weight: 600;
+    color: white;
+}
+
+.panduan-dropship .mengapa {
+    flex: 20%;
+    text-align: center;
+    margin: 10px;
+    padding: 24px 16px;
+    border: 1px solid #F5F5F5;
+    font-size: 16px;
+    border-radius: 6px;
+}
+.panduan-berbelanja-dropship {
+    border-bottom: 1px solid #F5F5F5;
+}
+
+.panduan-berbelanja-dropship img {
+    width: 50%;
+    flex: 1;
+}
+
+.panduan-berbelanja-dropship .keterangan {
+    flex: 1;
+}
+
+.panduan-berbelanja-dropship .keterangan p{
+    padding-left: 10px;
+    font-size: 14px;
+}
+
+.questions .answers {
+    padding: 10px;
+    border: 1px solid #F5F5F5;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: auto;
+}
+
+.questions .answers .text{
+    font-size: 14px;
+}
+
+.panduan-dropship a {
+    color: rgb(140, 156, 117);
+    text-decoration: none;
+}
+
+.panduan-dropship .hubungi {
+    background-color: #F5F5F5;
+    text-align: center;
+    padding: 20px;
+}
