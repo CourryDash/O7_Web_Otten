@@ -25,7 +25,7 @@ async (accessToken, refreshToken, profile, done) => {
         }
 
         const baseUsername = profile.displayName.replace(/\s+/g, '').toLowerCase();
-        const uniqueUsername = `${baseUsernxame}${Math.floor(100 + Math.random() * 900)}`;
+        const uniqueUsername = `${baseUsername}${Math.floor(100 + Math.random() * 900)}`;
 
         const newUser = await users.create({
             username: uniqueUsername,

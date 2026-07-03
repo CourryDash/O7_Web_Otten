@@ -8,6 +8,9 @@ const startServer = async () => {
         await sequelize.authenticate();
         console.log('Mysql connection has been established successfully.');
 
+        await sequelize.sync();
+        console.log('sync succesfully')
+
         app.listen(port, () => {
             console.log(`Server is running on http://localhost:${port}`);
         });

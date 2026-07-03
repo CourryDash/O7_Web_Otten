@@ -1,7 +1,7 @@
 import express from "express";
 import { getAllCategories, getCategoryById, updateCategory, deleteCategory, createCategory } from "../controller/categoryController.js";
 import { getAllProducts, getProductById, getProductsByCategory, updateProduct, deleteProduct, createProduct } from "../controller/productController.js";
-import { loginUser, getAllUsers, getUserById, getUserByEmail, updateUser, deleteUser, createUser } from "../controller/userController.js";
+import { loginUser, getAllUsers, getCurrentUser, getUserById, getUserByEmail, updateUser, deleteUser, createUser, logoutUser } from "../controller/userController.js";
 import { addToCart, removeFromCart, deleteCartItem, clearCart, getCartItems, checkout } from "../controller/cartController.js";
 import { verifyToken, isAdmin } from "../middleware/authMiddleware.js";
 import passport from "../config/passport.js";
@@ -26,12 +26,14 @@ router.delete("/products/:id", verifyToken, isAdmin, deleteProduct);
 
 // User routes
 router.post("/login", loginUser);
-router.get("/users", getAllUsers);
-router.get("/users/:id_user", getUserById);
-router.get("/users/email/:email", getUserByEmail);
+router.get("/users", verifyToken, isAdmin, getAllUsers);
+router.get("/users/email/:email", verifyToken, isAdmin, getUserByEmail);
+router.get("/users/:id_user", verifyToken, isAdmin, getUserById);
 router.post("/users", createUser);
-router.put("/users/:id_user", updateUser);
-router.delete("/users/:id_user", deleteUser);
+router.put("/me", verifyToken, updateUser);
+router.delete("/me", verifyToken, deleteUser);
+router.get("/me", verifyToken, getCurrentUser);
+router.post("/logout", verifyToken, logoutUser);
 
 // Cart routes
 router.get("/cart", verifyToken, getCartItems); 
@@ -56,7 +58,14 @@ router.get('/auth/google/callback',
             { expiresIn: '1h' }
         );
 
-        res.redirect(`${frontendUrl}/login?token=${token}&userId=${user.id_user}&email=${user.email}&role=${user.role}&username=${user.username}`);
+        res.cookie('token', token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 3600000
+        });
+
+        res.redirect(`${frontendUrl}/login?auth=success`);
     }
 );
 

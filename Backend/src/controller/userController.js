@@ -26,9 +26,15 @@ export const loginUser = async (req, res) => {
             { expiresIn: '1h' }
         );
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 3600000
+        });
+
         res.status(200).json({ 
             message: "Login Berhasil",
-            token: token,
             user: {
                 id_user: user.id_user,
                 username: user.username,
@@ -42,10 +48,28 @@ export const loginUser = async (req, res) => {
     }
 };
 
+export const getCurrentUser = async (req, res) => {
+    try {
+        const user = await users.findByPk(req.user.id_user, {
+            attributes: ['id_user', 'username', 'email', 'role']
+        });
+        
+        if (!user) {
+            return res.status(404).json({ error: "User tidak ditemukan" });
+        }
+        
+        res.status(200).json({ user });
+    } catch (error) {
+        console.error("Error fetching current user:", error);
+        res.status(500).json({ error: "Gagal mengambil data user" });
+    }
+};
 
 export const getAllUsers = async (req, res) => {
     try {
-        const allUsers = await users.findAll();
+        const allUsers = await users.findAll({
+            attributes: ['id_user', 'username', 'email', 'role']
+        });
         res.status(200).json(allUsers);
     } catch (error) {
         console.error("Error fetching users:", error);
@@ -56,11 +80,15 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
     const { id_user } = req.params;
     try {
-        const user = await users.findByPk(id_user);
+        const user = await users.findByPk(id_user , {
+            attributes: ['id_user', 'username', 'email', 'role']
+        });
+
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
         res.status(200).json(user);
+        
     } catch (error) {
         console.error("Error fetching user:", error);
         res.status(500).json({ error: "Failed to fetch user" });
@@ -70,7 +98,7 @@ export const getUserById = async (req, res) => {
 export const getUserByEmail = async (req, res) => {
     const { email } = req.params;
     try {
-        const user = await users.findOne({ where: { email } });
+        const user = await users.findOne({ where: { email }, attributes: ['id_user', 'username', 'email', 'role'] });
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
@@ -105,7 +133,12 @@ export const createUser = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await users.create({ username, email, password: hashedPassword });
-        res.status(201).json(newUser);
+        res.status(201).json({
+            id_user: newUser.id_user,
+            username: newUser.username,
+            email: newUser.email,
+            role: newUser.role
+        });
     } catch (error) {
         console.error("Error creating user:", error);
         res.status(500).json({ error: "Failed to create user" });
@@ -113,7 +146,7 @@ export const createUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-    const { id_user } = req.params;
+    const id_user = req.user.id_user;
     const { username, email, password } = req.body;
     try {
         const user = await users.findByPk(id_user);
@@ -122,14 +155,14 @@ export const updateUser = async (req, res) => {
         }
 
         if (email && email !== user.email) {
-            const existingEmail = await users.findOne({ where: { email } });
+            const existingEmail = await users.findOne({ where: { email }, attributes: ['id_user', 'username', 'email', 'role'] });
             if (existingEmail) {
                 return res.status(409).json({ error: "Email sudah digunakan oleh user lain." });
             }
         }
 
         if (username && username !== user.username) {
-            const existingUsername = await users.findOne({ where: { username } });
+            const existingUsername = await users.findOne({ where: { username }, attributes: ['id_user', 'username', 'email', 'role'] });
             if (existingUsername) {
                 return res.status(409).json({ error: "Username sudah digunakan oleh user lain." });
             }
@@ -143,7 +176,12 @@ export const updateUser = async (req, res) => {
         }
         
         await user.save();
-        res.status(200).json(user);
+        res.status(200).json({
+            id_user: user.id_user,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        });
     } catch (error) {
         console.error("Error updating user:", error);
         res.status(500).json({ error: "Failed to update user" });
@@ -151,7 +189,7 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-    const { id_user } = req.params;
+    const id_user = req.user.id_user;
     try {
         const user = await users.findByPk(id_user);
         if (!user) {
@@ -162,5 +200,19 @@ export const deleteUser = async (req, res) => {
     } catch (error) {
         console.error("Error deleting user:", error);
         res.status(500).json({ error: "Failed to delete user" });
+    }
+};
+
+export const logoutUser = async (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            sameSite: 'lax',
+            // secure: process.env.NODE_ENV === 'production'
+        });
+        res.status(200).json({ message: "Logout berhasil" });
+    } catch (error) {
+        console.error("Error saat logout:", error);
+        res.status(500).json({ error: "Gagal logout" });
     }
 };
