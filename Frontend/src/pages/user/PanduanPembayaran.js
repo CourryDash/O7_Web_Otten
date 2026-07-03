@@ -519,7 +519,7 @@ class PanduanPembayaran extends React.Component {
                                     </div>
                                     <div className="manual-confirm-alert">
                                         Jika menggunakan metode bank transfer, setoran tunai atau internet/mobile banking, Anda harus melakukan **Konfirmasi Pembayaran** setelah mentransfer dana ke rekening Otten Coffee.
-                                        <br className="d-none d-md-block" /> Untuk melakukan konfirmasi pembayaran <a href="#">klik disini</a>.
+                                        <br className="d-none d-md-block" /> Untuk melakukan konfirmasi pembayaran <a href="#!">klik disini</a>.
                                     </div>
                                 </div>
 

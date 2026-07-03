@@ -177,7 +177,7 @@ class Login extends React.Component {
                             customer.care@ottencoffee.co.id
                         </a>{' '}
                         atau kirim pesan via{' '}
-                        <a href="#" target="_blank" rel="noopener noreferrer" className="linkan">
+                        <a href="#!" target="_blank" rel="noopener noreferrer" className="linkan">
                             WhatsApp
                         </a>
                     </div>

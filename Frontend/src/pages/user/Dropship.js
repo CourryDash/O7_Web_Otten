@@ -150,7 +150,7 @@ class Dropship extends React.Component{
                                         </li>
                                     </ol>
                                     <br />
-                                    <p>Pelajari cara belanja di website Otten <a href="#">selengkapnya.</a></p>
+                                    <p>Pelajari cara belanja di website Otten <a href="!">selengkapnya.</a></p>
                                 </div>
                             </div>
 
@@ -162,17 +162,17 @@ class Dropship extends React.Component{
                                 </div>
                                 <div className="answers">
                                     <h4 className="fs-6 fw-semibold text-start">Apa kebijakan pengambilan/penukaran barang?</h4>
-                                    <span className="text">Prosedur pengembalian/penukaran barang dapat Anda pelajari <a href="#">di halaman ini</a></span>
+                                    <span className="text">Prosedur pengembalian/penukaran barang dapat Anda pelajari <a href="#!">di halaman ini</a></span>
                                 </div>
                                 <div className="answers">
                                     <h4 className="fs-6 fw-semibold text-start">Bagaimana cara menjadi dropshipper?</h4>
-                                    <span className="text">Pada dasarnya akun dropshipper dan member Otten Coffee adalah sama, jika sudah mendaftar silahkan <a href="#">Masuk di sini.</a></span>
+                                    <span className="text">Pada dasarnya akun dropshipper dan member Otten Coffee adalah sama, jika sudah mendaftar silahkan <a href="#!">Masuk di sini.</a></span>
                                     <br />
-                                    <span className="text">Jika belum mendaftar, silahkan <a href="#">Daftar di sini.</a></span>
+                                    <span className="text">Jika belum mendaftar, silahkan <a href="#!">Daftar di sini.</a></span>
                                 </div>
                                 <div className="answers">
                                     <h4 className="fs-6 fw-semibold text-start">Bagaimana cara pembayaran?</h4>
-                                    <span className="text">Cara pembayaran dengan E-Wallet, transfer bank, cicilan bank, minimarket, kartu kredit, dan Online Payment. Panduan pembayaran <a href="#">Klik di sini.</a></span>
+                                    <span className="text">Cara pembayaran dengan E-Wallet, transfer bank, cicilan bank, minimarket, kartu kredit, dan Online Payment. Panduan pembayaran <a href="#!">Klik di sini.</a></span>
                                 </div>
                                 <div className="answers">
                                     <h4 className="fs-6 fw-semibold text-start">Apakah ada diskon khusus dropshipper?</h4>

@@ -36,7 +36,7 @@ class HubungiKami extends React.Component {
                                         </a>
                                     </li>
                                     <li className="mb-2">
-                                        <a target="_blank" rel="noopener noreferrer" href="#">
+                                        <a target="_blank" rel="noopener noreferrer" href="#!">
                                             <img src="aset/kontak kami/telepon.png" width="20px" height="100%" alt="Phone Icon" />
                                             <span className="p-2">0804-1-999-666 (09.00 - 18.00 WIB)</span>
                                         </a>
