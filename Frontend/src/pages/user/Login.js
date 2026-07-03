@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../../css/login.css';
 
 function withNavigation(Component) {
@@ -11,7 +12,9 @@ class Login extends React.Component {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            isLoading: false,
+            errorMessage: '',
         };
     };
 
@@ -19,27 +22,46 @@ class Login extends React.Component {
 
     componentDidMount() {
         const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
-        const userId = params.get('userId');
-        const email = params.get('email');
-        const role = params.get('role');
-        const username = params.get('username');
+        const authSuccess = params.get('auth');
+        const error = params.get('error');
 
-        if (token) {
-            localStorage.setItem('token', token);
-            localStorage.setItem('userId', userId);
-            localStorage.setItem('userEmail', email);
-            localStorage.setItem('userRole', role);
-            localStorage.setItem('userName', username);
-            
-            // Redirect sesuai role
-            if (role === 'admin') {
-                this.props.navigate("/admin");
-            } else {
-                this.props.navigate("/");
-            }
+        if (authSuccess || error) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        if (error) {
+            alert('Login dengan Google gagal. Silakan coba lagi.');
+            return;
+        }
+
+        if (authSuccess === 'success') {
+            this.fetchUserData();
         }
     }
+
+    fetchUserData = async () => {
+        try {
+            const response = await axios.get(`${this.API_URL}/me`, {
+                withCredentials: true
+            });
+
+            if (response.data.user) {
+                const user = response.data.user;
+                localStorage.setItem('userId', user.id_user);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userRole', user.role);
+                localStorage.setItem('userName', user.username);
+
+                if (user.role === 'admin') {
+                    this.props.navigate("/admin");
+                } else {
+                    this.props.navigate("/");
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -49,45 +71,46 @@ class Login extends React.Component {
     handleSubmit = async (e) => { // Fitur : Login dengan JWT
         e.preventDefault();
         const { email, password } = this.state;
-        const status = document.getElementById('status');
+
+        this.setState({ isLoading: true, errorMessage: '' });
 
         try {
-            const response = await fetch(`${this.API_URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password })
-            });
+            const response = await axios.post(
+                `${this.API_URL}/login`,
+                { email, password },
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
 
-            const data = await response.json();
+            if (response.data.user) {
+                const user = response.data.user;
+                localStorage.setItem('userId', user.id_user);
+                localStorage.setItem('userEmail', user.email);
+                localStorage.setItem('userRole', user.role);
+                localStorage.setItem('userName', user.username);
 
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('userId', data.user.id_user);
-                localStorage.setItem('userEmail', data.user.email);
-                localStorage.setItem('userRole', data.user.role);
-                localStorage.setItem('userName', data.user.username);
-                
-                if (data.user.role === 'admin') {
+                if (user.role === 'admin') {
                     this.props.navigate("/admin");
                 } else {
                     this.props.navigate("/");
                 }
-            } else {
-                status.textContent = data.error || "Login gagal!";
-                status.classList.add("alert-danger");
-                status.style.display = "block";
             }
         } catch (error) {
-            console.error('Terjadi kesalahan saat login:', error);
-            status.textContent = "Gagal terhubung ke server. Coba lagi nanti.";
-            status.classList.add("alert-danger");
-            status.style.display = "block";
+            const errorMessage = error.response?.data?.error || "Login gagal!";
+            this.setState({ errorMessage: errorMessage });
+            console.error('Login error: ', error)
+        } finally {
+            this.setState({ isLoading: false });
         }
     }
 
     render() {
+        const { email, password, isLoading } = this.state;
+
         return (
             <div className="login-container">
                 <div className="login-left">
@@ -102,9 +125,11 @@ class Login extends React.Component {
 
                     <h5 className="fw-semibold mb-3">Masuk untuk melanjutkan</h5>
 
-                    <div className="container-fluid registration-container mt-3">
-                        <div id="status" className="alert" style={{ display: 'none' }}></div>
-                    </div>
+                    {this.state.errorMessage && (
+                        <div className="alert alert-danger">
+                            {this.state.errorMessage}
+                        </div>
+                    )}
 
                     <form onSubmit={this.handleSubmit}>
                         <label className="form-label small text-muted">Email</label>
@@ -113,9 +138,10 @@ class Login extends React.Component {
                             className="form-control mb-3"
                             placeholder="Email"
                             name="email"
-                            value={this.state.email}
+                            value={email}
                             onChange={this.handleInputChange}
                             required
+                            disabled={isLoading}
                         />
                         <label className="form-label small text-muted">Password</label>
                         <input
@@ -124,17 +150,18 @@ class Login extends React.Component {
                             placeholder="Password"
                             minLength="6"
                             name="password"
-                            value={this.state.password}
+                            value={password}
                             onChange={this.handleInputChange}
                             required
+                            disabled={isLoading}
                         />
-                        <button type="submit" className="btn btn-login mb-3">Masuk</button>
+                        <button type="submit" className="btn btn-login mb-3" disabled={isLoading}>{isLoading ? 'Memproses...' : 'Masuk'}</button>
                     </form>
 
                     <div className="divider">atau masuk dengan</div>
 
                     <div className="text-center mb-3">
-                        <a className="google-btn" href={`${this.API_URL}/auth/google`}>
+                        <a className="google-btn" href={`${this.API_URL}/auth/google`} onClick={() => this.setState({ isLoading: true })}>
                             <img src="aset/logo-google.png" alt="Google" />
                         </a>
                     </div>
@@ -150,7 +177,7 @@ class Login extends React.Component {
                             customer.care@ottencoffee.co.id
                         </a>{' '}
                         atau kirim pesan via{' '}
-                        <a href="/" target="_blank" rel="noopener noreferrer" className="linkan">
+                        <a href="#" target="_blank" rel="noopener noreferrer" className="linkan">
                             WhatsApp
                         </a>
                     </div>

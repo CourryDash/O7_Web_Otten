@@ -10,15 +10,11 @@ export default function CategoryEdit() {
     const [loading, setLoading] = useState(true);
 
     // State untuk form (Tambah/Edit)
-    const [formData, setFormData] = useState({ nama_kategori: '', deskripsi: '' }); // Sesuaikan nama kolom dengan database Anda
-    const [editingId, setEditingId] = useState(null); // Jika null berarti mode Tambah, jika ada isinya berarti mode Edit
-    const [infoMessage, setInfoMessage] = useState(''); // Untuk menampilkan pesan informasi kepada admin
-
-    // Mengambil token untuk otorisasi
-    const token = localStorage.getItem('token');
-    const authConfig = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
+    const [formData, setFormData] = useState({ nama_kategori: '', deskripsi: '' });
+    const [editingId, setEditingId] = useState(null);
+    const [infoMessage, setInfoMessage] = useState('');
+    const [confirmVisible, setConfirmVisible] = useState(false);
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
 
     // 1. Fungsi Mengambil Data Kategori (GET)
     const fetchCategories = async () => {
@@ -37,9 +33,28 @@ export default function CategoryEdit() {
         fetchCategories();
     }, []);
 
+    useEffect(() => {
+        if (infoMessage) {
+            const timer = setTimeout(() => {
+                setInfoMessage('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [infoMessage]);
+
     // 2. Fungsi Menangani Perubahan Input Form
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const confirmDelete = (id) => {
+        setDeleteTargetId(id);
+        setConfirmVisible(true);
+    };
+
+    const cancelDelete = () => {
+        setDeleteTargetId(null);
+        setConfirmVisible(false);
     };
 
     // 3. Fungsi Menyimpan Data (POST untuk Tambah, PUT untuk Edit)
@@ -48,12 +63,14 @@ export default function CategoryEdit() {
 
         try {
             if (editingId) {
-                // Mode Edit (PUT)
-                await axios.put(`${BASE_URL}/categories/${editingId}`, formData, authConfig);
+                await axios.put(`${BASE_URL}/categories/${editingId}`, formData, {
+                    withCredentials: true
+                });
                 setInfoMessage("Kategori berhasil diperbarui!");
             } else {
-                // Mode Tambah Baru (POST)
-                await axios.post(`${BASE_URL}/categories`, formData, authConfig);
+                await axios.post(`${BASE_URL}/categories`, formData, {
+                    withCredentials: true
+                });
                 setInfoMessage("Kategori baru berhasil ditambahkan!");
             }
 
@@ -69,14 +86,15 @@ export default function CategoryEdit() {
     };
 
     // 4. Fungsi Menghapus Data (DELETE)
-    const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Yakin ingin menghapus kategori ini?");
-        if (!confirmDelete) return;
-
+    const handleDelete = async () => {
+        if (!deleteTargetId) return;
+        setConfirmVisible(false);
         try {
-            await axios.delete(`${BASE_URL}/categories/${id}`, authConfig);
+            await axios.delete(`${BASE_URL}/categories/${deleteTargetId}`, {
+                withCredentials: true
+            });
             setInfoMessage("Kategori berhasil dihapus!");
-            fetchCategories(); // Ambil ulang data terbaru
+            fetchCategories();
         } catch (error) {
             console.error("Gagal menghapus data:", error);
             setInfoMessage("Gagal menghapus. Pastikan kategori ini tidak sedang digunakan oleh produk.");
@@ -85,12 +103,12 @@ export default function CategoryEdit() {
 
     // 5. Fungsi Mempersiapkan Form untuk Mode Edit
     const handleEditClick = (category) => {
-        setEditingId(category.id_kategori); // Sesuaikan dengan nama primary key di database Anda
+        setEditingId(category.id_kategori);
         setFormData({
             nama_kategori: category.nama_kategori,
             deskripsi: category.deskripsi || ''
         });
-        window.scrollTo(0, 0); // Gulir ke atas agar admin melihat formnya
+        window.scrollTo(0, 0);
     };
 
     // 6. Fungsi Membatalkan Edit
@@ -171,7 +189,7 @@ export default function CategoryEdit() {
                                     </button>
                                     <button
                                         className="btn btn-sm btn-outline-danger"
-                                        onClick={() => handleDelete(cat.id_kategori)}
+                                        onClick={() => confirmDelete(cat.id_kategori)}
                                     >
                                         Hapus
                                     </button>
@@ -189,6 +207,18 @@ export default function CategoryEdit() {
                     <div className="cart-info-message">{infoMessage}</div>
                 )}
             </div>
+            {confirmVisible && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Konfirmasi Hapus</h3>
+                        <p>Yakin ingin menghapus kategori ini?</p>
+                        <div className="modal-actions">
+                            <button className="modal-button cancel" onClick={cancelDelete}>Batal</button>
+                            <button className="modal-button confirm" onClick={handleDelete}>Lanjut</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -6,12 +6,12 @@ export default function ProductEdit() {
     const BASE_URL = process.env.REACT_APP_API_URL;
 
     const formRef = useRef(null); // Ref untuk form agar bisa di-reset setelah submit
-    
+
     // State untuk menyimpan daftar data dari backend
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]); // Wajib ada untuk Dropdown Kategori
     const [loading, setLoading] = useState(true);
-    
+
     // State form disesuaikan persis dengan kolom database products.js
     const initialFormState = {
         id_kategori: '',
@@ -19,16 +19,25 @@ export default function ProductEdit() {
         harga: '',
         stok: '',
         deskripsi: '',
-        img_product: '' 
+        img_product: ''
         // rating dan terjual sengaja tidak dimasukkan agar mengikuti default database
     };
-    
-    const [formData, setFormData] = useState(initialFormState);
-    const [editingId, setEditingId] = useState(null); 
-    const [infoMessage, setInfoMessage] = useState('');
 
-    const token = localStorage.getItem('token');
-    const authConfig = { headers: { Authorization: `Bearer ${token}` } };
+    const [formData, setFormData] = useState(initialFormState);
+    const [editingId, setEditingId] = useState(null);
+    const [infoMessage, setInfoMessage] = useState('');
+    const [confirmVisible, setConfirmVisible] = useState(false);
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
+
+    const confirmDelete = (id) => {
+        setDeleteTargetId(id)
+        setConfirmVisible(true);
+    };
+
+    const cancelDelete = () => {
+        setConfirmVisible(false);
+        setDeleteTargetId(null)
+    };
 
     // 1. Mengambil Data Produk DAN Kategori sekaligus
     const fetchData = async () => {
@@ -49,6 +58,15 @@ export default function ProductEdit() {
 
     useEffect(() => { fetchData(); }, []);
 
+    useEffect(() => {
+        if (infoMessage) {
+            const timer = setTimeout(() => {
+                setInfoMessage('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [infoMessage]);
+
     // 2. Handler Input Dinamis
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,57 +75,56 @@ export default function ProductEdit() {
     // 3. Proses Simpan / Edit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Validasi: Pastikan kategori sudah dipilih
         if (!formData.id_kategori) {
             setInfoMessage("Silakan pilih kategori produk terlebih dahulu!");
-            setTimeout(() => setInfoMessage(''), 2000);
             return;
         }
 
         try {
             if (editingId) {
-                await axios.put(`${BASE_URL}/products/${editingId}`, formData, authConfig);
+                await axios.put(`${BASE_URL}/products/${editingId}`, formData, {
+                    withCredentials: true
+                });
                 setInfoMessage("Data produk berhasil diperbarui!");
-                setTimeout(() => setInfoMessage(''), 2000);
             } else {
-                await axios.post(`${BASE_URL}/products`, formData, authConfig);
+                await axios.post(`${BASE_URL}/products`, formData, {
+                    withCredentials: true
+                });
                 setInfoMessage("Produk baru berhasil ditambahkan!");
-                setTimeout(() => setInfoMessage(''), 2000);
             }
-            
+
             setFormData(initialFormState);
             setEditingId(null);
-            fetchData(); 
+            fetchData();
 
         } catch (error) {
             console.error("Gagal menyimpan data:", error);
             setInfoMessage("Terjadi kesalahan saat menyimpan produk.");
-            setTimeout(() => setInfoMessage(''), 2000);
         }
     };
 
     // 4. Proses Hapus
-    const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Yakin ingin menghapus produk ini?");
-        if (!confirmDelete) return;
-
+    const handleDelete = async () => {
+        if (!deleteTargetId) return;
+        setConfirmVisible(false);
         try {
-            await axios.delete(`${BASE_URL}/products/${id}`, authConfig);
+            await axios.delete(`${BASE_URL}/products/${deleteTargetId}`, {
+                withCredentials: true
+            });
             setInfoMessage("Produk berhasil dihapus!");
-            setTimeout(() => setInfoMessage(''), 2000);
-            fetchData(); 
+            fetchData();
         } catch (error) {
             console.error("Gagal menghapus data:", error);
             setInfoMessage("Gagal menghapus produk. Mungkin produk masih terkait dengan data transaksi.");
-            setTimeout(() => setInfoMessage(''), 2000);
         }
     };
 
     // 5. Persiapan Edit
     const handleEditClick = (product) => {
         setEditingId(product.id_produk);
-        setFormData({ 
+        setFormData({
             id_kategori: product.id_kategori || '',
             nama_produk: product.nama_produk || '',
             harga: product.harga || '',
@@ -208,7 +225,7 @@ export default function ProductEdit() {
                                 <td>{prod.terjual}</td>
                                 <td>
                                     <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEditClick(prod)}>Edit</button>
-                                    <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(prod.id_produk)}>Hapus</button>
+                                    <button className="btn btn-sm btn-outline-danger" onClick={() => confirmDelete(prod.id_produk)}>Hapus</button>
                                 </td>
                             </tr>
                         ))}
@@ -223,6 +240,18 @@ export default function ProductEdit() {
                     </div>
                 )}
             </div>
+            {confirmVisible && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Konfirmasi Hapus</h3>
+                        <p>Yakin ingin menghapus produk ini?</p>
+                        <div className="modal-actions">
+                            <button className="modal-button cancel" onClick={cancelDelete}>Batal</button>
+                            <button className="modal-button confirm" onClick={handleDelete}>Lanjut</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
