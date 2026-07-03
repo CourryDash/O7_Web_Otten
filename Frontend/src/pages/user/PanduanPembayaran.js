@@ -323,7 +323,7 @@ class PanduanPembayaran extends React.Component {
                                         <div className="accordion-item">
                                             <h2 className="accordion-header">
                                                 <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBri">
-                                                    <img src="aset/Panduan Pembayaran/Transfer Bank(otomatis)/bri.png" className="payment-logo" />
+                                                    <img src="aset/Panduan Pembayaran/Transfer Bank(otomatis)/bri.png" className="payment-logo" alt="Bank BRI"/>
                                                     Bank BRI
                                                 </button>
                                             </h2>
@@ -361,7 +361,7 @@ class PanduanPembayaran extends React.Component {
                                         <div className="accordion-item">
                                             <h2 className="accordion-header">
                                                 <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBca">
-                                                    <img src="aset/Panduan Pembayaran/Transfer Bank(otomatis)/bca.png" alt="Bank BCA" className="payment-logo" />
+                                                    <img src="aset/Panduan Pembayaran/Transfer Bank(otomatis)/bca.png" alt="Bank BCA" className="payment-logo"/>
                                                     Bank BCA
                                                 </button>
                                             </h2>
@@ -575,7 +575,7 @@ class PanduanPembayaran extends React.Component {
                                                         <li>Untuk menggunakan promo, klik menu Voucher Untukmu dan pilih voucher yang tersedia sesuai syarat dan ketentuan promo.</li>
                                                         <li>Masukkan OTP yang sudah dikirimkan ke nomor HP yang terdaftar dan klik Bayar.</li>
                                                         <li>Saat ini Kredivo berlaku di Jabodetabek, Bandung, Surabaya, Semarang, Palembang, Medan, Bali, Yogyakarta, Solo, Makassar, Malang, Sukabumi, Cirebon, Balikpapan, Batam, Purwakarta, Padang, Pekanbaru, Manado, Samarinda, dan Kediri.</li>
-                                                        <li>Informasi lebih lanjut mengenai pembayaran menggunakan Kredivo bisa diakses pada <a href="https://kredivo.com/faqs" target="_blank">kredivo.com/faqs</a>.</li>
+                                                        <li>Informasi lebih lanjut mengenai pembayaran menggunakan Kredivo bisa diakses pada <a href="https://kredivo.com/faqs" target="_blank" rel="noopener noreferrer">kredivo.com/faqs</a>.</li>
                                                     </ol>
                                                 </div>
                                             </div>
