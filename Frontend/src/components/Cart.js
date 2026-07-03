@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "./CartContext";
 import '../css/Cart.css'
 
@@ -6,6 +6,16 @@ export default function CartPage() {
     const { cartItems, addToCart, removeFromCart, deleteItem, clearCart, loading, checkout } = useCart();
     const [confirmVisible, setConfirmVisible] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
+    const userRole = localStorage.getItem('userRole');
+
+    useEffect(() => {
+        if (infoMessage) {
+            const timer = setTimeout(() => {
+                setInfoMessage('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [infoMessage]);
 
     if (loading) {
         return <div>Memuat Isi Keranjang...</div>;
@@ -34,9 +44,6 @@ export default function CartPage() {
         } else {
             setInfoMessage("Terjadi kesalahan saat proses checkout.");
         }
-        setTimeout(() => {
-            setInfoMessage('');
-        }, 4000);
     }
 
     const cancelCheckout = () => {
@@ -68,7 +75,6 @@ export default function CartPage() {
 
                     {cartItems.map((item) => (
                         <div className="cart-item" key={item.product.id_produk}>
-                            <input type="checkbox" defaultChecked />
                             <img src={item.product.img_product} alt={item.product.nama_produk} />
 
                             <div className="cart-info">

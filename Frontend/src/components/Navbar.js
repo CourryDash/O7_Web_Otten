@@ -1,16 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from './CartContext';
+import axios from 'axios';
 
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            confirmVisible: false
+            confirmVisible: false,
+            isLoading: false,
         }
     }
 
     static contextType = CartContext;
+    API_URL = process.env.REACT_APP_API_URL;
 
     confirmLogout = () => {
         this.setState({ confirmVisible: true });
@@ -20,18 +23,45 @@ class Navbar extends React.Component {
         this.setState({ confirmVisible: false });
     }
 
-    handleLogout = () => {
-        localStorage.removeItem('token');
+    clearLocalStorage = () => {
         localStorage.removeItem('userId');
         localStorage.removeItem('userEmail');
         localStorage.removeItem('userRole');
         localStorage.removeItem('userName');
-        window.location.href = '/';
+    };
+
+    handleLogout = async () => {
+        this.setState({ confirmVisible: false });
+
+        try {
+            const response = await axios.post(`${this.API_URL}/logout`, {
+                method: 'POST',
+                withCredentials: true
+            });
+
+            if (response.ok) {
+                localStorage.removeItem('userId');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userName');
+
+                window.location.href = '/';
+            } else {
+                console.error("Logout gagal");
+                window.location.href = '/';
+            }
+        } catch (err) {
+            console.error("Error saat Logout: ", err);
+            this.clearLocalStorage();
+            window.location.href = '/';
+        } finally {
+            this.setState({ confirmVisible: false, isLoading: false });
+        }
     };
 
     render() {
         const { cartCount } = this.context;
-        const isLoggedIn = localStorage.getItem('token') !== null;
+        const isLoggedIn = localStorage.getItem('userId') !== null;
         const userName = localStorage.getItem('userName');
         const userAccount = userName ? userName : '';
         const userRole = localStorage.getItem('userRole');

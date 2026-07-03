@@ -1,55 +1,69 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../css/userprofile.css';
 
 export default function UserProfile() {
     const BASE_URL = process.env.REACT_APP_API_URL;
-    
-    // Ambil data sesi dari localStorage
-    const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
 
     // State untuk formulir
     const [formData, setFormData] = useState({
         username: '',
         email: '',
-        password: '' // Dikosongkan secara default
+        password: ''
     });
-    
-    const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState({ type: '', text: '' }); // Untuk alert sukses/gagal
 
-    const authConfig = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
+    const [loading, setLoading] = useState(true);
+    const [message, setMessage] = useState({ type: '', text: '' });
+    const [confirmVisible, setConfirmVisible] = useState(false);
+
+    const confirmDelete = () => {
+        setConfirmVisible(true);
+    }
+
+    const cancelDelete = () => {
+        setConfirmVisible(false);
+    }
 
     // 1. Tarik data pengguna saat halaman pertama kali dibuka
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                // Memanggil endpoint backend untuk mendapatkan detail user
-                const response = await axios.get(`${BASE_URL}/users/${userId}`, authConfig);
-                
-                // Isi formulir dengan data dari database (kecuali password)
-                setFormData({
-                    username: response.data.username || '',
-                    email: response.data.email || '',
-                    password: '' // Password tetap kosong agar tidak terekspos
-                });
-                setLoading(false);
-            } catch (error) {
-                console.error("Gagal mengambil data profil:", error);
-                setMessage({ type: 'danger', text: 'Gagal memuat data profil. Silakan coba lagi.' });
-                setLoading(false);
-            }
-        };
+    const fetchUserData = async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/me`, {
+                withCredentials: true
+            });
 
-        if (userId && token) {
-            fetchUserData();
-        } else {
+            if (response.data.user) {
+                setFormData({
+                    username: response.data.user.username || '',
+                    email: response.data.user.email || '',
+                    password: ''
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+            if (error.response?.status === 401) {
+                setMessage({ type: 'danger', text: 'Sesi Anda telah habis. Silakan login kembali.' });
+                window.location.href = '/login';
+            } else {
+                setMessage({ type: 'danger', text: 'Gagal memuat data profil.' });
+            }
+        } finally {
             setLoading(false);
-            setMessage({ type: 'danger', text: 'Anda belum login.' });
         }
-    }, [userId, token, BASE_URL]);
+    };
+
+    useEffect(() => {
+        const isLoggedIn = localStorage.getItem('userId') !== null;
+
+        if (!isLoggedIn) {
+            setLoading(false);
+            setMessage({ type: 'danger', text: 'Anda belum login. Silakan login terlebih dahulu.' });
+            window.location.href = '/login';
+            return;
+        }
+
+        fetchUserData();
+    }, []);
 
     // 2. Tangani ketikan pengguna di formulir
     const handleInputChange = (e) => {
@@ -59,9 +73,9 @@ export default function UserProfile() {
     // 3. Kirim data yang diperbarui ke Backend
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage({ type: '', text: '' }); // Reset pesan
+        setMessage({ type: '', text: '' });
+        setLoading(true);
 
-        // Siapkan data yang akan dikirim (jika password kosong, jangan kirim)
         const updatePayload = {
             username: formData.username,
             email: formData.email,
@@ -71,15 +85,57 @@ export default function UserProfile() {
         }
 
         try {
-            await axios.put(`${BASE_URL}/users/${userId}`, updatePayload, authConfig);
+            const response = await axios.put(`${BASE_URL}/me`, updatePayload, {
+                withCredentials: true
+            });
+
             setMessage({ type: 'success', text: 'Profil berhasil diperbarui!' });
-            
-            // Perbarui localStorage jika email berubah
-            localStorage.setItem('userEmail', formData.email);
-            
+
+            localStorage.setItem('userEmail', response.data.email || formData.email);
+            localStorage.setItem('userName', response.data.username || formData.username);
+
+            setFormData(prev => ({ ...prev, password: '' }));
+
+            window.location.href = '/'
+
         } catch (error) {
-            console.error("Gagal memperbarui profil:", error);
-            setMessage({ type: 'danger', text: 'Terjadi kesalahan saat menyimpan data.' });
+            console.error("Error updating profile:", error);
+            if (error.response?.status === 401) {
+                setMessage({ type: 'danger', text: 'Sesi Anda telah habis. Silakan login kembali.' });
+                window.location.href = '/login';
+            } else {
+                setMessage({ type: 'danger', text: error.response?.data?.error || 'Gagal menyimpan perubahan.' });
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deleteAccount = async () => {
+        if (!confirmVisible) {
+            setConfirmVisible(true);
+            return;
+        }
+
+        try {
+            const response = await axios.delete(`${BASE_URL}/me`, {
+                withCredentials: true
+            });
+
+            if (response.status === 200) {
+                localStorage.clear();
+                window.location.href = '/login';
+            } else {
+                console.error("Gagal menghapus akun");
+                setMessage({ type: 'danger', text: 'Gagal menghapus akun.' });
+            }
+
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            setMessage({ type: 'danger', text: 'Gagal menghapus akun.' });
+        } finally {
+            setLoading(false);
+            setConfirmVisible(false);
         }
     };
 
@@ -101,54 +157,106 @@ export default function UserProfile() {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label text-muted">ID Pengguna</label>
-                        <input 
-                            type="text" 
-                            className="form-control" 
-                            value={userId} 
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={userId || ''}
                             disabled // ID tidak boleh diubah
                         />
                     </div>
-                    
+
                     <div className="mb-3">
                         <label className="form-label">Username</label>
-                        <input 
-                            type="text" 
-                            className="form-control" 
+                        <input
+                            type="text"
+                            className="form-control"
                             name="username"
-                            value={formData.username} 
-                            onChange={handleInputChange} 
-                            required 
+                            value={formData.username}
+                            onChange={handleInputChange}
+                            required
+                            disabled={loading}
                         />
                     </div>
 
                     <div className="mb-3">
                         <label className="form-label">Email</label>
-                        <input 
-                            type="email" 
-                            className="form-control" 
+                        <input
+                            type="email"
+                            className="form-control"
                             name="email"
-                            value={formData.email} 
-                            onChange={handleInputChange} 
-                            required 
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                            disabled={loading}
                         />
                     </div>
 
                     <div className="mb-4">
                         <label className="form-label">Password Baru (Opsional)</label>
-                        <input 
-                            type="password" 
-                            className="form-control" 
+                        <input
+                            type="password"
+                            className="form-control"
                             name="password"
                             placeholder="Isi hanya jika ingin mengganti password"
-                            value={formData.password} 
-                            onChange={handleInputChange} 
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            disabled={loading}
                         />
                         <div className="form-text">Biarkan kosong jika tidak ingin mengubah password Anda saat ini.</div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100 fw-bold py-2">
-                        Simpan Perubahan
+                    <button
+                        type="button"
+                        className="btn btn-danger fw-bold py-2 mb-5"
+                        onClick={confirmDelete}
+                    >
+                        Hapus Akun
                     </button>
+
+                    <div className="d-flex justify-content-between mt-5">
+                        <button
+                            type="submit"
+                            className="btn btn-primary fw-bold py-2"
+                            disabled={loading}
+                        >
+                            {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
+                        </button>
+
+                        <button
+                            type="button"
+                            className="btn btn-secondary fw-bold py-2 text-end"
+                            onClick={() => window.location.href = '/'}
+                        >
+                            Kembali
+                        </button>
+                    </div>
+
+                    {confirmVisible && (
+                        <div className="modal-overlay">
+                            <div className="modal-content">
+                                <h3>Konfirmasi Penghapusan Akun</h3>
+                                <p>
+                                    <strong>Apakah Anda yakin ingin menghapus akun ini? Tindakan ini tidak dapat dibatalkan.</strong> 
+                                </p>
+                                <div className="modal-actions">
+                                    <button
+                                        type="button"
+                                        className="modal-button confirm"
+                                        onClick={deleteAccount}
+                                    >
+                                        Ya, Hapus Akun
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="modal-button cancel"
+                                        onClick={cancelDelete}
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>
