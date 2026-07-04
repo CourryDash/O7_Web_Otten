@@ -8,7 +8,7 @@ const startServer = async () => {
         await sequelize.authenticate();
         console.log('Mysql connection has been established successfully.');
 
-        await sequelize.sync();
+        await sequelize.sync({ alter: true });
         console.log('sync succesfully')
 
         app.listen(port, () => {
