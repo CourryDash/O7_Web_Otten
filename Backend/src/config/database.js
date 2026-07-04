@@ -14,7 +14,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     logging: false, 
     dialectOptions: {
         ssl: {
-            ca: fs.readFileSync(path.resolve(__dirname, './ca.pem')),
+            ca: process.env.DB_SSL,
             rejectUnauthorized: false
         }
     }
