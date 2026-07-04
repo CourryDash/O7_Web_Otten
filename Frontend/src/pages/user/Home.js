@@ -67,6 +67,7 @@ const Home = () => {
 
             try {
                 const baseUrl = `${process.env.REACT_APP_API_URL}/products`;
+                console.log(baseUrl);
 
                 // Fetch semua produk secara paralel
                 const [latestRes, espressoRes, beginnerRes] = await Promise.all([
